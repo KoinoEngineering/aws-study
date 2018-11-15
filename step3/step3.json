@@ -486,23 +486,22 @@
                      "",
                      [
                         "#!/bin/bash -xe\n",
-                        "SetupLog='/tmp/Setuplog.txt'\n",
-                        "# reset log\n",
-                        "echo '' > SetupLog\n",
-                        "echo '##########yum update##########' >> SetupLog\n",
-                        "yum -y update >> SetupLog\n",
-                        "echo '##########yum update end##########' >> SetupLog\n",
-                        "echo '##########docker install start##########' >> SetupLog\n",
+                        "echo '' > /tmp/Setuplog.txt\n",
+                        "echo '##########yum update##########' >> /tmp/Setuplog.txt\n",
+                        "yum -y update >> /tmp/Setuplog.txt\n",
+                        "echo '##########yum update end##########' >> /tmp/Setuplog.txt\n",
+                        "echo '##########docker install start##########' >> /tmp/Setuplog.txt\n",
                         "amazon-linux-extras install -y docker\n",
-                        "echo '##########docker install end##########' >> SetupLog\n",
-                        "echo '##########docker service start##########' >> SetupLog\n",
-                        "service docker start >> SetupLog\n",
-                        "systemctl enable docker.service >> SetupLog\n",
-                        "echo '##########docker service end##########' >> SetupLog\n",
-                        "echo '##########mysql run start##########' >> SetupLog\n",
-                        "docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 mysql >> SetupLog\n",
-                        "echo '##########mysql run end##########' >> SetupLog\n",
-                        "\n"                     ]
+                        "echo '##########docker install end##########' >> /tmp/Setuplog.txt\n",
+                        "echo '##########docker service start##########' >> /tmp/Setuplog.txt\n",
+                        "service docker start >> /tmp/Setuplog.txt\n",
+                        "systemctl enable docker.service >> /tmp/Setuplog.txt\n",
+                        "echo '##########docker service end##########' >> /tmp/Setuplog.txt\n",
+                        "echo '##########mysql run start##########' >> /tmp/Setuplog.txt\n",
+                        "docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 mysql >> /tmp/Setuplog.txt\n",
+                        "echo '##########mysql run end##########' >> /tmp/Setuplog.txt\n",
+                        "\n"
+                     ]
                   ]
                }
             }
