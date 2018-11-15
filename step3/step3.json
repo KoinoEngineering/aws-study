@@ -1,5 +1,47 @@
 {
    "AWSTemplateFormatVersion": "2010-09-09",
+   "Parameters": {
+      "AvailabilityZone": {
+         "Type": "String",
+         "Default": "eu-west-2a",
+         "AllowedValues": [
+            "us-east-1a",
+            "us-east-1b",
+            "us-east-1c",
+            "us-east-1d",
+            "us-east-1e",
+            "us-east-1f",
+            "us-east-2a",
+            "us-east-2b",
+            "us-east-2c",
+            "us-west-1a",
+            "us-west-1c",
+            "us-west-2a",
+            "us-west-2b",
+            "us-west-2c",
+            "ca-central-1a",
+            "ca-central-1b",
+            "eu-central-1a",
+            "eu-central-1b",
+            "eu-central-1c",
+            "eu-west-1a",
+            "eu-west-1b",
+            "eu-west-1c",
+            "eu-west-2a",
+            "eu-west-2b",
+            "eu-west-2c",
+            "eu-west-3a",
+            "eu-west-3b",
+            "eu-west-3c",
+            "ap-northeast-1a",
+            "ap-northeast-1c",
+            "ap-northeast-1d",
+            "ap-northeast-2a",
+            "ap-northeast-2c"
+         ],
+         "Description": "AvailabilityZone"
+      }
+   },
    "Resources": {
       "VPC": {
          "Type": "AWS::EC2::VPC",
@@ -66,7 +108,9 @@
             },
             "MapPublicIpOnLaunch": "true",
             "CidrBlock": "198.91.117.0/24",
-            "AvailabilityZone": "eu-west-2a",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
             "Tags": [
                {
                   "Key": "Name",
@@ -92,7 +136,9 @@
                "Ref": "VPC"
             },
             "CidrBlock": "198.91.128.0/24",
-            "AvailabilityZone": "eu-west-2a",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
             "Tags": [
                {
                   "Key": "Name",
@@ -366,7 +412,9 @@
          "Type": "AWS::EC2::Instance",
          "Properties": {
             "KeyName": "anteku-koino-london",
-            "AvailabilityZone": "eu-west-2a",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
             "ImageId": "ami-017b0e29fac27906b",
             "InstanceType": "t2.micro",
             "PrivateIpAddress": "198.91.117.101",
@@ -400,7 +448,9 @@
          "Type": "AWS::EC2::Instance",
          "Properties": {
             "KeyName": "anteku-koino-london",
-            "AvailabilityZone": "eu-west-2a",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
             "ImageId": "ami-017b0e29fac27906b",
             "InstanceType": "t2.micro",
             "PrivateIpAddress": "198.91.117.102",
@@ -435,12 +485,17 @@
                      [
                         "#!/bin/bash -xe\n",
                         "echo '' > /tmp/log.txt\n",
+                        "echo '##########yum update##########' >> /tmp/log.txt\n",
+                        "yum -y update >> /tmp/log.txt\n",
+                        "echo '##########yum update end##########' >> /tmp/log.txt\n",
                         "echo '##########nginx install##########'  >> /tmp/log.txt\n",
                         "amazon-linux-extras install -y nginx1.12 >> /tmp/log.txt\n",
                         "echo '##########nginx start##########'  >> /tmp/log.txt\n",
                         "service nginx start >> /tmp/log.txt\n",
                         "echo '##########nginx auto start##########'  >> /tmp/log.txt\n",
                         "systemctl enable nginx.service >> /tmp/log.txt \n",
+                        "echo '##########mysql client install##########'  >> /tmp/log.txt\n",
+                        "yum install -y mysql >> /tmp/log.txt \n",
                         "\n"
                      ]
                   ]
@@ -450,9 +505,12 @@
       },
       "MYSQLEC2": {
          "Type": "AWS::EC2::Instance",
+         "DependsOn": "NGW",
          "Properties": {
             "KeyName": "anteku-koino-london",
-            "AvailabilityZone": "eu-west-2a",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
             "ImageId": "ami-017b0e29fac27906b",
             "InstanceType": "t2.micro",
             "PrivateIpAddress": "198.91.128.101",
@@ -498,7 +556,7 @@
                         "systemctl enable docker.service >> /tmp/Setuplog.txt\n",
                         "echo '##########docker service end##########' >> /tmp/Setuplog.txt\n",
                         "echo '##########mysql run start##########' >> /tmp/Setuplog.txt\n",
-                        "docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 mysql >> /tmp/Setuplog.txt\n",
+                        "docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 mysql:5.7 >> /tmp/Setuplog.txt\n",
                         "echo '##########mysql run end##########' >> /tmp/Setuplog.txt\n",
                         "\n"
                      ]
