@@ -1,0 +1,569 @@
+{
+   "AWSTemplateFormatVersion": "2010-09-09",
+   "Parameters": {
+      "AvailabilityZone": {
+         "Type": "String",
+         "Default": "eu-west-2a",
+         "AllowedValues": [
+            "us-east-1a",
+            "us-east-1b",
+            "us-east-1c",
+            "us-east-1d",
+            "us-east-1e",
+            "us-east-1f",
+            "us-east-2a",
+            "us-east-2b",
+            "us-east-2c",
+            "us-west-1a",
+            "us-west-1c",
+            "us-west-2a",
+            "us-west-2b",
+            "us-west-2c",
+            "ca-central-1a",
+            "ca-central-1b",
+            "eu-central-1a",
+            "eu-central-1b",
+            "eu-central-1c",
+            "eu-west-1a",
+            "eu-west-1b",
+            "eu-west-1c",
+            "eu-west-2a",
+            "eu-west-2b",
+            "eu-west-2c",
+            "eu-west-3a",
+            "eu-west-3b",
+            "eu-west-3c",
+            "ap-northeast-1a",
+            "ap-northeast-1c",
+            "ap-northeast-1d",
+            "ap-northeast-2a",
+            "ap-northeast-2c"
+         ],
+         "Description": "AvailabilityZone"
+      }
+   },
+   "Resources": {
+      "VPC": {
+         "Type": "AWS::EC2::VPC",
+         "Properties": {
+            "CidrBlock": "198.91.0.0/16",
+            "EnableDnsSupport": true,
+            "EnableDnsHostnames": true,
+            "InstanceTenancy": "default",
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-VPC"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "IGW": {
+         "Type": "AWS::EC2::InternetGateway",
+         "Properties": {
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-IGW"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "AttachGateway": {
+         "Type": "AWS::EC2::VPCGatewayAttachment",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "InternetGatewayId": {
+               "Ref": "IGW"
+            }
+         }
+      },
+      "WebSubnet": {
+         "Type": "AWS::EC2::Subnet",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "MapPublicIpOnLaunch": "true",
+            "CidrBlock": "198.91.117.0/24",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Web-Subnet"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MysqlSubnet": {
+         "Type": "AWS::EC2::Subnet",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "CidrBlock": "198.91.128.0/24",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Mysql-Subnet"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "WebRouteTable": {
+         "Type": "AWS::EC2::RouteTable",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Web-RT"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MysqlRouteTable": {
+         "Type": "AWS::EC2::RouteTable",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Mysql-RT"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "SubnetWebAttache": {
+         "Type": "AWS::EC2::SubnetRouteTableAssociation",
+         "Properties": {
+            "RouteTableId": {
+               "Ref": "WebRouteTable"
+            },
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            }
+         }
+      },
+      "SubnetMysqlAttache": {
+         "Type": "AWS::EC2::SubnetRouteTableAssociation",
+         "Properties": {
+            "RouteTableId": {
+               "Ref": "MysqlRouteTable"
+            },
+            "SubnetId": {
+               "Ref": "MysqlSubnet"
+            }
+         }
+      },
+      "WebRoute": {
+         "Type": "AWS::EC2::Route",
+         "Properties": {
+            "RouteTableId": {
+               "Ref": "WebRouteTable"
+            },
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "GatewayId": {
+               "Ref": "IGW"
+            }
+         }
+      },
+      "MysqlRoute": {
+         "Type": "AWS::EC2::Route",
+         "Properties": {
+            "RouteTableId": {
+               "Ref": "MysqlRouteTable"
+            },
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "NatGatewayId": {
+               "Ref": "NGW"
+            }
+         }
+      },
+      "NGW": {
+         "Type": "AWS::EC2::NatGateway",
+         "Properties": {
+            "AllocationId": {
+               "Fn::GetAtt": [
+                  "EIP",
+                  "AllocationId"
+               ]
+            },
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-NATGateway"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "EIP": {
+         "Type": "AWS::EC2::EIP",
+         "Properties": {}
+      },
+      "StepSecurityGroup": {
+         "Type": "AWS::EC2::SecurityGroup",
+         "Properties": {
+            "GroupDescription": "Step for private",
+            "SecurityGroupIngress": [
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "CidrIp": "121.1.249.102/32"
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Step-SecurityGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VpcId": {
+               "Ref": "VPC"
+            }
+         }
+      },
+      "WebSecurityGroup": {
+         "Type": "AWS::EC2::SecurityGroup",
+         "Properties": {
+            "GroupDescription": "Web",
+            "SecurityGroupIngress": [
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "SourceSecurityGroupId": {
+                     "Ref": "StepSecurityGroup"
+                  }
+               },
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "80",
+                  "ToPort": "80",
+                  "CidrIp": "0.0.0.0/0"
+               },
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "443",
+                  "ToPort": "443",
+                  "CidrIp": "0.0.0.0/0"
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Web-SecurityGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VpcId": {
+               "Ref": "VPC"
+            }
+         }
+      },
+      "MysqlSecurityGroup": {
+         "Type": "AWS::EC2::SecurityGroup",
+         "Properties": {
+            "GroupDescription": "Mysql for private",
+            "SecurityGroupIngress": [
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "SourceSecurityGroupId": {
+                     "Ref": "StepSecurityGroup"
+                  }
+               },
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "3306",
+                  "ToPort": "3306",
+                  "SourceSecurityGroupId": {
+                     "Ref": "WebSecurityGroup"
+                  }
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Mysql-SecurityGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VpcId": {
+               "Ref": "VPC"
+            }
+         }
+      },
+      "STEPEC2": {
+         "Type": "AWS::EC2::Instance",
+         "Properties": {
+            "KeyName": "anteku-koino-london",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
+            "ImageId": "ami-017b0e29fac27906b",
+            "InstanceType": "t2.micro",
+            "PrivateIpAddress": "198.91.117.101",
+            "SecurityGroupIds": [
+               {
+                  "Ref": "StepSecurityGroup"
+               }
+            ],
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Step"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "WEBEC2": {
+         "Type": "AWS::EC2::Instance",
+         "Properties": {
+            "KeyName": "anteku-koino-london",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
+            "ImageId": "ami-017b0e29fac27906b",
+            "InstanceType": "t2.micro",
+            "PrivateIpAddress": "198.91.117.102",
+            "SecurityGroupIds": [
+               {
+                  "Ref": "WebSecurityGroup"
+               }
+            ],
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Web"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "UserData": {
+               "Fn::Base64": {
+                  "Fn::Join": [
+                     "",
+                     [
+                        "#!/bin/bash -xe\n",
+                        "echo '' > /tmp/log.txt\n",
+                        "echo '##########yum update##########' >> /tmp/log.txt\n",
+                        "yum -y update >> /tmp/log.txt\n",
+                        "echo '##########yum update end##########' >> /tmp/log.txt\n",
+                        "echo '##########nginx install##########'  >> /tmp/log.txt\n",
+                        "amazon-linux-extras install -y nginx1.12 >> /tmp/log.txt\n",
+                        "echo '##########nginx start##########'  >> /tmp/log.txt\n",
+                        "service nginx start >> /tmp/log.txt\n",
+                        "echo '##########nginx auto start##########'  >> /tmp/log.txt\n",
+                        "systemctl enable nginx.service >> /tmp/log.txt \n",
+                        "echo '##########mysql client install##########'  >> /tmp/log.txt\n",
+                        "yum install -y mysql >> /tmp/log.txt \n",
+                        "\n"
+                     ]
+                  ]
+               }
+            }
+         }
+      },
+      "MYSQLEC2": {
+         "Type": "AWS::EC2::Instance",
+         "DependsOn": "NGW",
+         "Properties": {
+            "KeyName": "anteku-koino-london",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone"
+            },
+            "ImageId": "ami-017b0e29fac27906b",
+            "InstanceType": "t2.micro",
+            "PrivateIpAddress": "198.91.128.101",
+            "SecurityGroupIds": [
+               {
+                  "Ref": "MysqlSecurityGroup"
+               }
+            ],
+            "SubnetId": {
+               "Ref": "MysqlSubnet"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step3-Mysql"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step3"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "UserData": {
+               "Fn::Base64": {
+                  "Fn::Join": [
+                     "",
+                     [
+                        "#!/bin/bash -xe\n",
+                        "echo '' > /tmp/Setuplog.txt\n",
+                        "echo '##########yum update##########' >> /tmp/Setuplog.txt\n",
+                        "yum -y update >> /tmp/Setuplog.txt\n",
+                        "echo '##########yum update end##########' >> /tmp/Setuplog.txt\n",
+                        "echo '##########docker install start##########' >> /tmp/Setuplog.txt\n",
+                        "amazon-linux-extras install -y docker\n",
+                        "echo '##########docker install end##########' >> /tmp/Setuplog.txt\n",
+                        "echo '##########docker service start##########' >> /tmp/Setuplog.txt\n",
+                        "service docker start >> /tmp/Setuplog.txt\n",
+                        "systemctl enable docker.service >> /tmp/Setuplog.txt\n",
+                        "echo '##########docker service end##########' >> /tmp/Setuplog.txt\n",
+                        "echo '##########mysql run start##########' >> /tmp/Setuplog.txt\n",
+                        "docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 mysql:5.7 >> /tmp/Setuplog.txt\n",
+                        "echo '##########mysql run end##########' >> /tmp/Setuplog.txt\n",
+                        "\n"
+                     ]
+                  ]
+               }
+            }
+         }
+      }
+   }
+}
