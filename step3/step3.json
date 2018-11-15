@@ -434,7 +434,7 @@
                      "",
                      [
                         "#!/bin/bash -xe\n",
-                        "ceho '' > /tmp/log.txt\n",
+                        "echo '' > /tmp/log.txt\n",
                         "echo '##########nginx install##########'  >> /tmp/log.txt\n",
                         "amazon-linux-extras install -y nginx1.12 >> /tmp/log.txt\n",
                         "echo '##########nginx start##########'  >> /tmp/log.txt\n",
