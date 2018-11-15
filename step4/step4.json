@@ -53,11 +53,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-VPC"
+                  "Value": "Step4-VPC"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -74,11 +74,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-IGW"
+                  "Value": "Step4-IGW"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -114,11 +114,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Web-Subnet"
+                  "Value": "Step4-Web-Subnet"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -142,11 +142,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Mysql-Subnet"
+                  "Value": "Step4-Mysql-Subnet"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -166,11 +166,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Web-RT"
+                  "Value": "Step4-Web-RT"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -190,11 +190,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Mysql-RT"
+                  "Value": "Step4-Mysql-RT"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -266,11 +266,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-NATGateway"
+                  "Value": "Step4-NATGateway"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -300,11 +300,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Step-SecurityGroup"
+                  "Value": "Step4-Step-SecurityGroup"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -347,11 +347,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Web-SecurityGroup"
+                  "Value": "Step4-Web-SecurityGroup"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -390,11 +390,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Mysql-SecurityGroup"
+                  "Value": "Step4-Mysql-SecurityGroup"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -429,11 +429,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Step"
+                  "Value": "Step4-Step"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -465,11 +465,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Web"
+                  "Value": "Step4-Web"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
@@ -525,11 +525,11 @@
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step3-Mysql"
+                  "Value": "Step4-Mysql"
                },
                {
                   "Key": "Steps",
-                  "Value": "Step3"
+                  "Value": "Step4"
                },
                {
                   "Key": "Application",
