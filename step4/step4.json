@@ -1,9 +1,49 @@
 {
    "AWSTemplateFormatVersion": "2010-09-09",
    "Parameters": {
-      "AvailabilityZone": {
+      "AvailabilityZone1": {
          "Type": "String",
          "Default": "eu-west-2a",
+         "AllowedValues": [
+            "us-east-1a",
+            "us-east-1b",
+            "us-east-1c",
+            "us-east-1d",
+            "us-east-1e",
+            "us-east-1f",
+            "us-east-2a",
+            "us-east-2b",
+            "us-east-2c",
+            "us-west-1a",
+            "us-west-1c",
+            "us-west-2a",
+            "us-west-2b",
+            "us-west-2c",
+            "ca-central-1a",
+            "ca-central-1b",
+            "eu-central-1a",
+            "eu-central-1b",
+            "eu-central-1c",
+            "eu-west-1a",
+            "eu-west-1b",
+            "eu-west-1c",
+            "eu-west-2a",
+            "eu-west-2b",
+            "eu-west-2c",
+            "eu-west-3a",
+            "eu-west-3b",
+            "eu-west-3c",
+            "ap-northeast-1a",
+            "ap-northeast-1c",
+            "ap-northeast-1d",
+            "ap-northeast-2a",
+            "ap-northeast-2c"
+         ],
+         "Description": "AvailabilityZone"
+      },
+      "AvailabilityZone2": {
+         "Type": "String",
+         "Default": "eu-west-2b",
          "AllowedValues": [
             "us-east-1a",
             "us-east-1b",
@@ -109,7 +149,7 @@
             "MapPublicIpOnLaunch": "true",
             "CidrBlock": "198.91.117.0/24",
             "AvailabilityZone": {
-               "Ref": "AvailabilityZone"
+               "Ref": "AvailabilityZone1"
             },
             "Tags": [
                {
@@ -129,7 +169,7 @@
             ]
          }
       },
-      "MysqlSubnet": {
+      "MysqlSubnet1": {
          "Type": "AWS::EC2::Subnet",
          "Properties": {
             "VpcId": {
@@ -137,7 +177,35 @@
             },
             "CidrBlock": "198.91.128.0/24",
             "AvailabilityZone": {
-               "Ref": "AvailabilityZone"
+               "Ref": "AvailabilityZone1"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Mysql-Subnet"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MysqlSubnet2": {
+         "Type": "AWS::EC2::Subnet",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "CidrBlock": "198.91.129.0/24",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone2"
             },
             "Tags": [
                {
@@ -181,30 +249,6 @@
             ]
          }
       },
-      "MysqlRouteTable": {
-         "Type": "AWS::EC2::RouteTable",
-         "Properties": {
-            "VpcId": {
-               "Ref": "VPC"
-            },
-            "Tags": [
-               {
-                  "Key": "Name",
-                  "Value": "Step4-Mysql-RT"
-               },
-               {
-                  "Key": "Steps",
-                  "Value": "Step4"
-               },
-               {
-                  "Key": "Application",
-                  "Value": {
-                     "Ref": "AWS::StackId"
-                  }
-               }
-            ]
-         }
-      },
       "SubnetWebAttache": {
          "Type": "AWS::EC2::SubnetRouteTableAssociation",
          "Properties": {
@@ -213,17 +257,6 @@
             },
             "SubnetId": {
                "Ref": "WebSubnet"
-            }
-         }
-      },
-      "SubnetMysqlAttache": {
-         "Type": "AWS::EC2::SubnetRouteTableAssociation",
-         "Properties": {
-            "RouteTableId": {
-               "Ref": "MysqlRouteTable"
-            },
-            "SubnetId": {
-               "Ref": "MysqlSubnet"
             }
          }
       },
@@ -238,52 +271,6 @@
                "Ref": "IGW"
             }
          }
-      },
-      "MysqlRoute": {
-         "Type": "AWS::EC2::Route",
-         "Properties": {
-            "RouteTableId": {
-               "Ref": "MysqlRouteTable"
-            },
-            "DestinationCidrBlock": "0.0.0.0/0",
-            "NatGatewayId": {
-               "Ref": "NGW"
-            }
-         }
-      },
-      "NGW": {
-         "Type": "AWS::EC2::NatGateway",
-         "Properties": {
-            "AllocationId": {
-               "Fn::GetAtt": [
-                  "EIP",
-                  "AllocationId"
-               ]
-            },
-            "SubnetId": {
-               "Ref": "WebSubnet"
-            },
-            "Tags": [
-               {
-                  "Key": "Name",
-                  "Value": "Step4-NATGateway"
-               },
-               {
-                  "Key": "Steps",
-                  "Value": "Step4"
-               },
-               {
-                  "Key": "Application",
-                  "Value": {
-                     "Ref": "AWS::StackId"
-                  }
-               }
-            ]
-         }
-      },
-      "EIP": {
-         "Type": "AWS::EC2::EIP",
-         "Properties": {}
       },
       "StepSecurityGroup": {
          "Type": "AWS::EC2::SecurityGroup",
@@ -413,7 +400,7 @@
          "Properties": {
             "KeyName": "anteku-koino-london",
             "AvailabilityZone": {
-               "Ref": "AvailabilityZone"
+               "Ref": "AvailabilityZone1"
             },
             "ImageId": "ami-017b0e29fac27906b",
             "InstanceType": "t2.micro",
@@ -449,7 +436,7 @@
          "Properties": {
             "KeyName": "anteku-koino-london",
             "AvailabilityZone": {
-               "Ref": "AvailabilityZone"
+               "Ref": "AvailabilityZone1"
             },
             "ImageId": "ami-017b0e29fac27906b",
             "InstanceType": "t2.micro",
@@ -503,29 +490,55 @@
             }
          }
       },
-      "MYSQLEC2": {
-         "Type": "AWS::EC2::Instance",
-         "DependsOn": "NGW",
+      "MYSQLDBSUBNETGROUP": {
+         "Type": "AWS::RDS::DBSubnetGroup",
          "Properties": {
-            "KeyName": "anteku-koino-london",
-            "AvailabilityZone": {
-               "Ref": "AvailabilityZone"
-            },
-            "ImageId": "ami-017b0e29fac27906b",
-            "InstanceType": "t2.micro",
-            "PrivateIpAddress": "198.91.128.101",
-            "SecurityGroupIds": [
+            "DBSubnetGroupDescription": "DB Subnet Group for MySql",
+            "DBSubnetGroupName": "MySqlSubnetGroup",
+            "SubnetIds": [
                {
-                  "Ref": "MysqlSecurityGroup"
+                  "Ref": "MysqlSubnet1"
+               },
+               {
+                  "Ref": "MysqlSubnet2"
                }
             ],
-            "SubnetId": {
-               "Ref": "MysqlSubnet"
-            },
             "Tags": [
                {
                   "Key": "Name",
-                  "Value": "Step4-Mysql"
+                  "Value": "Step4-MySqlSubnetGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MYSQLRDS": {
+         "Type": "AWS::RDS::DBInstance",
+         "Properties": {
+            "AllocatedStorage" : "20",
+            "DBName": "Step4MySql",
+            "Port": "3306",
+            "DBInstanceClass": "db.t2.micro",
+            "DBSubnetGroupName": {
+               "Ref": "MYSQLDBSUBNETGROUP"
+            },
+            "Engine": "MySQL",
+            "EngineVersion": "5.7.23",
+            "MasterUsername": "root",
+            "MasterUserPassword": "mysqlpassword",
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4MySql"
                },
                {
                   "Key": "Steps",
@@ -538,31 +551,11 @@
                   }
                }
             ],
-            "UserData": {
-               "Fn::Base64": {
-                  "Fn::Join": [
-                     "",
-                     [
-                        "#!/bin/bash -xe\n",
-                        "echo '' > /tmp/Setuplog.txt\n",
-                        "echo '##########yum update##########' >> /tmp/Setuplog.txt\n",
-                        "yum -y update >> /tmp/Setuplog.txt\n",
-                        "echo '##########yum update end##########' >> /tmp/Setuplog.txt\n",
-                        "echo '##########docker install start##########' >> /tmp/Setuplog.txt\n",
-                        "amazon-linux-extras install -y docker\n",
-                        "echo '##########docker install end##########' >> /tmp/Setuplog.txt\n",
-                        "echo '##########docker service start##########' >> /tmp/Setuplog.txt\n",
-                        "service docker start >> /tmp/Setuplog.txt\n",
-                        "systemctl enable docker.service >> /tmp/Setuplog.txt\n",
-                        "echo '##########docker service end##########' >> /tmp/Setuplog.txt\n",
-                        "echo '##########mysql run start##########' >> /tmp/Setuplog.txt\n",
-                        "docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d -p 3306:3306 mysql:5.7 >> /tmp/Setuplog.txt\n",
-                        "echo '##########mysql run end##########' >> /tmp/Setuplog.txt\n",
-                        "\n"
-                     ]
-                  ]
+            "VPCSecurityGroups": [
+               {
+                  "Ref": "MysqlSecurityGroup"
                }
-            }
+            ]
          }
       }
    }
