@@ -1,0 +1,562 @@
+{
+   "AWSTemplateFormatVersion": "2010-09-09",
+   "Parameters": {
+      "AvailabilityZone1": {
+         "Type": "String",
+         "Default": "eu-west-2a",
+         "AllowedValues": [
+            "us-east-1a",
+            "us-east-1b",
+            "us-east-1c",
+            "us-east-1d",
+            "us-east-1e",
+            "us-east-1f",
+            "us-east-2a",
+            "us-east-2b",
+            "us-east-2c",
+            "us-west-1a",
+            "us-west-1c",
+            "us-west-2a",
+            "us-west-2b",
+            "us-west-2c",
+            "ca-central-1a",
+            "ca-central-1b",
+            "eu-central-1a",
+            "eu-central-1b",
+            "eu-central-1c",
+            "eu-west-1a",
+            "eu-west-1b",
+            "eu-west-1c",
+            "eu-west-2a",
+            "eu-west-2b",
+            "eu-west-2c",
+            "eu-west-3a",
+            "eu-west-3b",
+            "eu-west-3c",
+            "ap-northeast-1a",
+            "ap-northeast-1c",
+            "ap-northeast-1d",
+            "ap-northeast-2a",
+            "ap-northeast-2c"
+         ],
+         "Description": "AvailabilityZone"
+      },
+      "AvailabilityZone2": {
+         "Type": "String",
+         "Default": "eu-west-2b",
+         "AllowedValues": [
+            "us-east-1a",
+            "us-east-1b",
+            "us-east-1c",
+            "us-east-1d",
+            "us-east-1e",
+            "us-east-1f",
+            "us-east-2a",
+            "us-east-2b",
+            "us-east-2c",
+            "us-west-1a",
+            "us-west-1c",
+            "us-west-2a",
+            "us-west-2b",
+            "us-west-2c",
+            "ca-central-1a",
+            "ca-central-1b",
+            "eu-central-1a",
+            "eu-central-1b",
+            "eu-central-1c",
+            "eu-west-1a",
+            "eu-west-1b",
+            "eu-west-1c",
+            "eu-west-2a",
+            "eu-west-2b",
+            "eu-west-2c",
+            "eu-west-3a",
+            "eu-west-3b",
+            "eu-west-3c",
+            "ap-northeast-1a",
+            "ap-northeast-1c",
+            "ap-northeast-1d",
+            "ap-northeast-2a",
+            "ap-northeast-2c"
+         ],
+         "Description": "AvailabilityZone"
+      }
+   },
+   "Resources": {
+      "VPC": {
+         "Type": "AWS::EC2::VPC",
+         "Properties": {
+            "CidrBlock": "198.91.0.0/16",
+            "EnableDnsSupport": true,
+            "EnableDnsHostnames": true,
+            "InstanceTenancy": "default",
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-VPC"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "IGW": {
+         "Type": "AWS::EC2::InternetGateway",
+         "Properties": {
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-IGW"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "AttachGateway": {
+         "Type": "AWS::EC2::VPCGatewayAttachment",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "InternetGatewayId": {
+               "Ref": "IGW"
+            }
+         }
+      },
+      "WebSubnet": {
+         "Type": "AWS::EC2::Subnet",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "MapPublicIpOnLaunch": "true",
+            "CidrBlock": "198.91.117.0/24",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone1"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Web-Subnet"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MysqlSubnet1": {
+         "Type": "AWS::EC2::Subnet",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "CidrBlock": "198.91.128.0/24",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone1"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Mysql-Subnet"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MysqlSubnet2": {
+         "Type": "AWS::EC2::Subnet",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "CidrBlock": "198.91.129.0/24",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone2"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Mysql-Subnet"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "WebRouteTable": {
+         "Type": "AWS::EC2::RouteTable",
+         "Properties": {
+            "VpcId": {
+               "Ref": "VPC"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Web-RT"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "SubnetWebAttache": {
+         "Type": "AWS::EC2::SubnetRouteTableAssociation",
+         "Properties": {
+            "RouteTableId": {
+               "Ref": "WebRouteTable"
+            },
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            }
+         }
+      },
+      "WebRoute": {
+         "Type": "AWS::EC2::Route",
+         "Properties": {
+            "RouteTableId": {
+               "Ref": "WebRouteTable"
+            },
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "GatewayId": {
+               "Ref": "IGW"
+            }
+         }
+      },
+      "StepSecurityGroup": {
+         "Type": "AWS::EC2::SecurityGroup",
+         "Properties": {
+            "GroupDescription": "Step for private",
+            "SecurityGroupIngress": [
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "CidrIp": "121.1.249.102/32"
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Step-SecurityGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VpcId": {
+               "Ref": "VPC"
+            }
+         }
+      },
+      "WebSecurityGroup": {
+         "Type": "AWS::EC2::SecurityGroup",
+         "Properties": {
+            "GroupDescription": "Web",
+            "SecurityGroupIngress": [
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "SourceSecurityGroupId": {
+                     "Ref": "StepSecurityGroup"
+                  }
+               },
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "80",
+                  "ToPort": "80",
+                  "CidrIp": "0.0.0.0/0"
+               },
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "443",
+                  "ToPort": "443",
+                  "CidrIp": "0.0.0.0/0"
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Web-SecurityGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VpcId": {
+               "Ref": "VPC"
+            }
+         }
+      },
+      "MysqlSecurityGroup": {
+         "Type": "AWS::EC2::SecurityGroup",
+         "Properties": {
+            "GroupDescription": "Mysql for private",
+            "SecurityGroupIngress": [
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "22",
+                  "ToPort": "22",
+                  "SourceSecurityGroupId": {
+                     "Ref": "StepSecurityGroup"
+                  }
+               },
+               {
+                  "IpProtocol": "tcp",
+                  "FromPort": "3306",
+                  "ToPort": "3306",
+                  "SourceSecurityGroupId": {
+                     "Ref": "WebSecurityGroup"
+                  }
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Mysql-SecurityGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VpcId": {
+               "Ref": "VPC"
+            }
+         }
+      },
+      "STEPEC2": {
+         "Type": "AWS::EC2::Instance",
+         "Properties": {
+            "KeyName": "anteku-koino-london",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone1"
+            },
+            "ImageId": "ami-017b0e29fac27906b",
+            "InstanceType": "t2.micro",
+            "PrivateIpAddress": "198.91.117.101",
+            "SecurityGroupIds": [
+               {
+                  "Ref": "StepSecurityGroup"
+               }
+            ],
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Step"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "WEBEC2": {
+         "Type": "AWS::EC2::Instance",
+         "Properties": {
+            "KeyName": "anteku-koino-london",
+            "AvailabilityZone": {
+               "Ref": "AvailabilityZone1"
+            },
+            "ImageId": "ami-017b0e29fac27906b",
+            "InstanceType": "t2.micro",
+            "PrivateIpAddress": "198.91.117.102",
+            "SecurityGroupIds": [
+               {
+                  "Ref": "WebSecurityGroup"
+               }
+            ],
+            "SubnetId": {
+               "Ref": "WebSubnet"
+            },
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-Web"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "UserData": {
+               "Fn::Base64": {
+                  "Fn::Join": [
+                     "",
+                     [
+                        "#!/bin/bash -xe\n",
+                        "echo '' > /tmp/log.txt\n",
+                        "echo '##########yum update##########' >> /tmp/log.txt\n",
+                        "yum -y update >> /tmp/log.txt\n",
+                        "echo '##########yum update end##########' >> /tmp/log.txt\n",
+                        "echo '##########nginx install##########'  >> /tmp/log.txt\n",
+                        "amazon-linux-extras install -y nginx1.12 >> /tmp/log.txt\n",
+                        "echo '##########nginx start##########'  >> /tmp/log.txt\n",
+                        "service nginx start >> /tmp/log.txt\n",
+                        "echo '##########nginx auto start##########'  >> /tmp/log.txt\n",
+                        "systemctl enable nginx.service >> /tmp/log.txt \n",
+                        "echo '##########mysql client install##########'  >> /tmp/log.txt\n",
+                        "yum install -y mysql >> /tmp/log.txt \n",
+                        "\n"
+                     ]
+                  ]
+               }
+            }
+         }
+      },
+      "MYSQLDBSUBNETGROUP": {
+         "Type": "AWS::RDS::DBSubnetGroup",
+         "Properties": {
+            "DBSubnetGroupDescription": "DB Subnet Group for MySql",
+            "DBSubnetGroupName": "MySqlSubnetGroup",
+            "SubnetIds": [
+               {
+                  "Ref": "MysqlSubnet1"
+               },
+               {
+                  "Ref": "MysqlSubnet2"
+               }
+            ],
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4-MySqlSubnetGroup"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ]
+         }
+      },
+      "MYSQLRDS": {
+         "Type": "AWS::RDS::DBInstance",
+         "Properties": {
+            "AllocatedStorage" : "20",
+            "DBName": "Step4MySql",
+            "Port": "3306",
+            "DBInstanceClass": "db.t2.micro",
+            "DBSubnetGroupName": {
+               "Ref": "MYSQLDBSUBNETGROUP"
+            },
+            "Engine": "MySQL",
+            "EngineVersion": "5.7.23",
+            "MasterUsername": "root",
+            "MasterUserPassword": "mysqlpassword",
+            "Tags": [
+               {
+                  "Key": "Name",
+                  "Value": "Step4MySql"
+               },
+               {
+                  "Key": "Steps",
+                  "Value": "Step4"
+               },
+               {
+                  "Key": "Application",
+                  "Value": {
+                     "Ref": "AWS::StackId"
+                  }
+               }
+            ],
+            "VPCSecurityGroups": [
+               {
+                  "Ref": "MysqlSecurityGroup"
+               }
+            ]
+         }
+      }
+   }
+}
