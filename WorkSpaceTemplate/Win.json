@@ -1,0 +1,293 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "AvailabilityZone1": {
+      "Type": "String",
+      "Default": "eu-west-2a",
+      "AllowedValues": [
+        "us-east-1a",
+        "us-east-1b",
+        "us-east-1c",
+        "us-east-1d",
+        "us-east-1e",
+        "us-east-1f",
+        "us-east-2a",
+        "us-east-2b",
+        "us-east-2c",
+        "us-west-1a",
+        "us-west-1c",
+        "us-west-2a",
+        "us-west-2b",
+        "us-west-2c",
+        "ca-central-1a",
+        "ca-central-1b",
+        "eu-central-1a",
+        "eu-central-1b",
+        "eu-central-1c",
+        "eu-west-1a",
+        "eu-west-1b",
+        "eu-west-1c",
+        "eu-west-2a",
+        "eu-west-2b",
+        "eu-west-2c",
+        "eu-west-3a",
+        "eu-west-3b",
+        "eu-west-3c",
+        "ap-northeast-1a",
+        "ap-northeast-1c",
+        "ap-northeast-1d",
+        "ap-northeast-2a",
+        "ap-northeast-2c"
+      ],
+      "Description": "AvailabilityZone"
+    },
+    "AvailabilityZone2": {
+      "Type": "String",
+      "Default": "eu-west-2b",
+      "AllowedValues": [
+        "us-east-1a",
+        "us-east-1b",
+        "us-east-1c",
+        "us-east-1d",
+        "us-east-1e",
+        "us-east-1f",
+        "us-east-2a",
+        "us-east-2b",
+        "us-east-2c",
+        "us-west-1a",
+        "us-west-1c",
+        "us-west-2a",
+        "us-west-2b",
+        "us-west-2c",
+        "ca-central-1a",
+        "ca-central-1b",
+        "eu-central-1a",
+        "eu-central-1b",
+        "eu-central-1c",
+        "eu-west-1a",
+        "eu-west-1b",
+        "eu-west-1c",
+        "eu-west-2a",
+        "eu-west-2b",
+        "eu-west-2c",
+        "eu-west-3a",
+        "eu-west-3b",
+        "eu-west-3c",
+        "ap-northeast-1a",
+        "ap-northeast-1c",
+        "ap-northeast-1d",
+        "ap-northeast-2a",
+        "ap-northeast-2c"
+      ],
+      "Description": "AvailabilityZone"
+    }
+  },
+  "Resources": {
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "198.91.0.0/16",
+        "EnableDnsSupport": true,
+        "EnableDnsHostnames": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "VPC"
+          },
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackId"
+            }
+          }
+        ]
+      }
+    },
+    "IGW": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "IGW"
+          },
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackId"
+            }
+          }
+        ]
+      }
+    },
+    "AttachGateway": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "IGW"
+        }
+      }
+    },
+    "PublicSubnet1": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "MapPublicIpOnLaunch": "true",
+        "CidrBlock": "198.91.117.0/24",
+        "AvailabilityZone": {
+          "Ref": "AvailabilityZone1"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Publc-Subnet1"
+          },
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackId"
+            }
+          }
+        ]
+      }
+    },
+    "PublicSubnet2": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "MapPublicIpOnLaunch": "true",
+        "CidrBlock": "198.91.118.0/24",
+        "AvailabilityZone": {
+          "Ref": "AvailabilityZone2"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Public-Subnet2"
+          },
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackId"
+            }
+          }
+        ]
+      }
+    },
+    "PublicRoute1": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable1"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "IGW"
+        }
+      }
+    },
+    "PublicRouteTable1": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Public-RT"
+          },
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackId"
+            }
+          }
+        ]
+      }
+    },
+    "SubnetPublicAttache1": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable1"
+        },
+        "SubnetId": {
+          "Ref": "PublicSubnet1"
+        }
+      }
+    },
+    "PublicRoute2": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable2"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "IGW"
+        }
+      }
+    },
+    "PublicRouteTable2": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "Public-RT"
+          },
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackId"
+            }
+          }
+        ]
+      }
+    },
+    "SubnetPublicAttache2": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable2"
+        },
+        "SubnetId": {
+          "Ref": "PublicSubnet2"
+        }
+      }
+    },
+    "WinDir": {
+      "Type": "AWS::DirectoryService::MicrosoftAD",
+      "Properties": {
+        "Edition": "Standard",
+        "Name": "WinDir.com",
+        "Password": "November17/",
+        "VpcSettings": {
+          "SubnetIds": [
+            {
+              "Ref": "PublicSubnet1"
+            },
+            {
+              "Ref": "PublicSubnet2"
+            }
+          ],
+          "VpcId": {
+            "Ref": "VPC"
+          }
+        }
+      }
+    }
+  }
+}
